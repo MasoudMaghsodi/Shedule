@@ -1,195 +1,91 @@
+// ایمپورت کتابخانه‌های ضروری
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:shedule/gen/assets.gen.dart';
 import 'package:shedule/model/shedule_model.dart';
 
+// ثابت‌های پروژه - رنگ‌ها و اندازه‌ها
+const _kPrimaryColor = Color(0xFF00664F); // رنگ اصلی سبز تیره
+const _kSecondaryColor = Color(0xFF4DC591); // رنگ ثانویه سبز روشن
+const _kAccentColor = Color(0xFFFF7648); // رنگ آکسان نارنجی
+const _kInactiveIconColor = Color(0xFF88889D); // رنگ آیکون غیرفعال
+const _kTextColor = Color(0xFF212523); // رنگ متن اصلی
+const _kSubTextColor = Color(0xFFBCC1CD); // رنگ متن فرعی
+const _kCardSize = Size(149, 119); // اندازه کارت درس‌ها
+const _kHorizontalPadding = 32.0; // فاصله افقی استاندارد
+
+// کلاس اصلی صفحه برنامه‌ریزی
 class MainScheduleScreen extends StatelessWidget {
   const MainScheduleScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Scaffold(
-        body: SingleChildScrollView(
+    return Scaffold(
+      body: SafeArea(
+        child: Stack(
+          children: [
+            _buildBackground(), // بخش پس‌زمینه سبز رنگ
+            _MainContent(), // محتوای اصلی صفحه
+            _Decorations(), // تزئینات و تصاویر
+          ],
+        ),
+      ),
+    );
+  }
+
+  // ساخت بخش پس‌زمینه بالایی
+  Widget _buildBackground() => Container(
+        height: 360,
+        color: _kPrimaryColor,
+        child: Align(
+          alignment: Alignment.topLeft,
+          child: Padding(
+            padding: const EdgeInsets.only(top: 32, left: _kHorizontalPadding),
+            child: InkWell(
+              onTap: () => debugPrint('Search'), // کلیک روی دکمه جستجو
+              borderRadius: BorderRadius.circular(12),
+              child: Container(
+                width: 50,
+                height: 50,
+                decoration: BoxDecoration(
+                  color: Colors.white.withValues(alpha: 0.1), // شفافیت 10%
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: const Icon(CupertinoIcons.search, color: Colors.white),
+              ),
+            ),
+          ),
+        ),
+      );
+}
+
+// کلاس محتوای اصلی زیر بخش سبز رنگ
+class _MainContent extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Positioned(
+      top: 300,
+      bottom: 0,
+      left: 0,
+      right: 0,
+      child: Container(
+        decoration: const BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.only(
+              topLeft: Radius.circular(45)), // گوشه گرد بالایی
+        ),
+        child: SingleChildScrollView(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Stack(
-                children: [
-                  Container(
-                    height: 385,
-                  ),
-                  Container(
-                    height: 359,
-                    decoration: BoxDecoration(
-                      color: Color(0xff00664F),
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.only(top: 32, left: 32),
-                    child: InkWell(
-                      onTap: () {
-                        debugPrint('hi');
-                      },
-                      child: Container(
-                        width: 50,
-                        height: 50,
-                        decoration: BoxDecoration(
-                            color: Color(
-                              0xffffffff,
-                            ).withValues(alpha: 0.1),
-                            borderRadius: BorderRadius.circular(12)),
-                        child: Icon(
-                          CupertinoIcons.search,
-                          color: Colors.white,
-                        ),
-                      ),
-                    ),
-                  ),
-                  Positioned(
-                    right: 0,
-                    bottom: 0,
-                    child: Assets.img.shedule.vector
-                        .image(fit: BoxFit.cover, width: 350),
-                  ),
-                  Positioned(
-                    bottom: 0,
-                    right: 0,
-                    child: Assets.img.shedule.hero.image(
-                      fit: BoxFit.cover,
-                    ),
-                  ),
-                ],
-              ),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  ScheduleTitleHandler(
-                      title: 'Subjects',
-                      description: 'Recommendations for you'),
-                  SizedBox(
-                    height: 119,
-                    child: ListView.builder(
-                      scrollDirection: Axis.horizontal,
-                      shrinkWrap: true,
-                      physics: BouncingScrollPhysics(),
-                      itemCount: sheduleModel.length,
-                      itemBuilder: (context, index) {
-                        return Padding(
-                          padding: EdgeInsets.fromLTRB(
-                              index == 0 ? 32 : 0, 0, 16, 0),
-                          child: CourseItem(
-                            index: index,
-                          ),
-                        );
-                      },
-                    ),
-                  ),
-                  SizedBox(
-                    height: 24,
-                  ),
-                  ScheduleTitleHandler(
-                      title: 'Your Schedule', description: 'Next lessons'),
-                  Padding(
-                    padding: const EdgeInsets.only(left: 32, right: 32),
-                    child: Container(
-                      width: MediaQuery.of(context).size.width,
-                      height: 137,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(12),
-                        color: Color(0xff4DC591),
-                      ),
-                      child: Stack(
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.only(left: 32),
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  'Biology',
-                                  style: TextStyle(
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.w600,
-                                      color: Colors.white),
-                                ),
-                                SizedBox(
-                                  height: 8,
-                                ),
-                                Text(
-                                  'Chapter 3: Animal Kingdom',
-                                  style: TextStyle(
-                                      fontSize: 12,
-                                      fontWeight: FontWeight.w400,
-                                      color: Colors.white),
-                                ),
-                                SizedBox(
-                                  height: 8,
-                                ),
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  children: [
-                                    Icon(
-                                      Icons.place_outlined,
-                                      color: Colors.white,
-                                    ),
-                                    SizedBox(
-                                      width: 4,
-                                    ),
-                                    Text(
-                                      'Room 2-168',
-                                      style: TextStyle(
-                                          fontSize: 12,
-                                          fontWeight: FontWeight.w200,
-                                          color: Colors.white),
-                                    )
-                                  ],
-                                )
-                              ],
-                            ),
-                          ),
-                          Positioned(
-                            top: 0,
-                            right: 0,
-                            child: GestureDetector(
-                              onTap: () {
-                                debugPrint('');
-                              },
-                              child: Container(
-                                alignment: Alignment.centerRight,
-                                width: 120,
-                                height: 90,
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.only(
-                                      topRight: Radius.circular(12)),
-                                  image: DecorationImage(
-                                    fit: BoxFit.cover,
-                                    image: AssetImage(
-                                      Assets.img.shedule.wave.path,
-                                    ),
-                                  ),
-                                ),
-                                child: Align(
-                                    alignment: Alignment.centerRight,
-                                    child: Padding(
-                                      padding: const EdgeInsets.only(right: 18),
-                                      child: Assets.img.shedule.ellipsisV2
-                                          .svg(fit: BoxFit.cover, width: 30),
-                                    )),
-                              ),
-                            ),
-                          )
-                        ],
-                      ),
-                    ),
-                  ),
-                  SizedBox(
-                    height: 32,
-                  )
-                ],
-              ),
+              const _SectionHeader(
+                  'Subjects', 'Recommendations for you'), // عنوان بخش درس‌ها
+              _CourseList(), // لیست کارت‌های درسی
+              const _SectionHeader(
+                  'Your Schedule', 'Next lessons'), // عنوان بخش برنامه
+              const _NextLessonCard(), // کارت درس بعدی
+              const SizedBox(height: 32),
             ],
           ),
         ),
@@ -198,157 +94,263 @@ class MainScheduleScreen extends StatelessWidget {
   }
 }
 
-class SheduleBottomNavigation extends StatelessWidget {
-  const SheduleBottomNavigation({
-    super.key,
-    required this.changePage,
-    required this.selectedIndex,
-  });
+// ویجت سربرگ بخش‌های مختلف
+class _SectionHeader extends StatelessWidget {
+  final String title;
+  final String subtitle;
 
-  final Function(int page) changePage;
-  final int selectedIndex;
+  const _SectionHeader(this.title, this.subtitle);
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      height: 70,
-      color: Colors.white,
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(_kHorizontalPadding, 12, 0, 16),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          BottomNavigationItem(
-            iconName: Assets.img.shedule.home.path,
-            onTap: () => changePage(0),
-            isSelected: selectedIndex == 0,
-          ),
-          BottomNavigationItem(
-            iconName: Assets.img.shedule.notes.path,
-            onTap: () => changePage(1),
-            isSelected: selectedIndex == 1,
-          ),
-          BottomNavigationItem(
-            iconName: Assets.img.shedule.comment.path,
-            onTap: () => changePage(2),
-            isSelected: selectedIndex == 2,
-          ),
-          BottomNavigationItem(
-            iconName: Assets.img.shedule.user.path,
-            onTap: () => changePage(3),
-            isSelected: selectedIndex == 3,
-          ),
+          Text(title, style: _headerTextStyle), // عنوان اصلی
+          const SizedBox(height: 4),
+          Text(subtitle, style: _subHeaderTextStyle), // توضیحات
         ],
+      ),
+    );
+  }
+
+  // استایل‌های متنی
+  static const _headerTextStyle = TextStyle(
+    fontSize: 24,
+    fontWeight: FontWeight.bold,
+    color: _kTextColor,
+  );
+
+  static const _subHeaderTextStyle = TextStyle(
+    fontSize: 14,
+    fontWeight: FontWeight.w400,
+    color: _kSubTextColor,
+  );
+}
+
+// لیست افقی کارت‌های درسی
+class _CourseList extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      height: _kCardSize.height,
+      child: ListView.separated(
+        padding: const EdgeInsets.only(left: _kHorizontalPadding, right: 16),
+        scrollDirection: Axis.horizontal, // لیست افقی
+        physics: const BouncingScrollPhysics(), // افکت اسکرول
+        itemCount: sheduleModel.length,
+        separatorBuilder: (_, __) =>
+            const SizedBox(width: 16), // فاصله بین آیتم‌ها
+        itemBuilder: (_, index) =>
+            _CourseCard(sheduleModel[index]), // ساخت هر کارت
       ),
     );
   }
 }
 
-class BottomNavigationItem extends StatelessWidget {
-  const BottomNavigationItem({
-    super.key,
-    required this.iconName,
-    required this.onTap,
-    required this.isSelected,
-  });
-  final String iconName;
-  final Function() onTap;
-  final bool isSelected;
+// کارت تک درس
+class _CourseCard extends StatelessWidget {
+  final SheduleModel course;
+
+  const _CourseCard(this.course);
+
   @override
   Widget build(BuildContext context) {
-    return Expanded(
-      flex: 1,
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.center,
+    return GestureDetector(
+      onTap: () {}, // کلیک روی کارت
+      child: Stack(
         children: [
-          IconButton(
-            onPressed: onTap,
-            icon: SvgPicture.asset(
-              iconName,
-              colorFilter: ColorFilter.mode(
-                  isSelected ? Color(0xffFF7648) : Color(0xff88889D),
-                  BlendMode.srcIn),
-              width: 24,
-              height: 24,
+          // بدنه اصلی کارت
+          Container(
+            width: _kCardSize.width,
+            decoration: BoxDecoration(
+              color: course.colorMain,
+              borderRadius: BorderRadius.circular(12),
+            ),
+            padding: const EdgeInsets.all(18),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                course.icon, // آیکون درس
+                Text(
+                  course.name,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis, // ... برای متن طولانی
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontSize: 16,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ],
             ),
           ),
-          isSelected
-              ? Container(
-                  width: 4,
-                  height: 4,
-                  decoration: BoxDecoration(
-                      color: Color(0xffFF7648),
-                      borderRadius: BorderRadius.circular(100)),
-                )
-              : SizedBox.shrink()
+          // بخش کناری کارت
+          Positioned(
+            right: 0,
+            top: 0,
+            child: Container(
+              width: 68,
+              height: 50,
+              decoration: BoxDecoration(
+                color: course.boxCornerColor,
+                borderRadius: const BorderRadius.only(
+                  topRight: Radius.circular(12),
+                  bottomLeft: Radius.circular(60),
+                ),
+              ),
+              child: IconButton(
+                icon: SvgPicture.asset(
+                  // آیکون سه نقطه
+                  Assets.img.shedule.ellipsisV2.path,
+                  width: 30,
+                ),
+                onPressed: () {},
+              ),
+            ),
+          ),
         ],
       ),
     );
   }
 }
 
-class CourseItem extends StatelessWidget {
-  final int index;
-  const CourseItem({
-    super.key,
-    required this.index,
-  });
+// کارت درس بعدی
+class _NextLessonCard extends StatelessWidget {
+  const _NextLessonCard();
 
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: _kHorizontalPadding),
+      child: Container(
+        height: 137,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(12),
+          color: _kSecondaryColor,
+        ),
+        child: const Stack(
+          children: [
+            Padding(
+              padding: EdgeInsets.only(left: _kHorizontalPadding),
+              child: _LessonDetails(), // جزئیات درس
+            ),
+            _WaveDecoration(), // تزئین موجی شکل
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+// جزئیات درس داخل کارت
+class _LessonDetails extends StatelessWidget {
+  const _LessonDetails();
+
+  @override
+  Widget build(BuildContext context) {
+    return const Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text('Biology', style: _titleStyle), // نام درس
+        SizedBox(height: 8),
+        Text('Chapter 3: Animal Kingdom', style: _subtitleStyle), // فصل
+        SizedBox(height: 8),
+        Row(children: [
+          Icon(Icons.place_outlined,
+              color: Colors.white, size: 16), // آیکون مکان
+          SizedBox(width: 4),
+          Text('Room 2-168', style: _locationStyle), // محل کلاس
+        ]),
+      ],
+    );
+  }
+
+  // استایل‌های متنی
+  static const _titleStyle = TextStyle(
+    fontSize: 16,
+    fontWeight: FontWeight.w600,
+    color: Colors.white,
+  );
+
+  static const _subtitleStyle = TextStyle(
+    fontSize: 12,
+    fontWeight: FontWeight.w400,
+    color: Colors.white,
+  );
+
+  static const _locationStyle = TextStyle(
+    fontSize: 12,
+    fontWeight: FontWeight.w200,
+    color: Colors.white,
+  );
+}
+
+// تزئین موجی شکل در کارت
+class _WaveDecoration extends StatelessWidget {
+  const _WaveDecoration();
+
+  @override
+  Widget build(BuildContext context) {
+    return Positioned(
+      top: 0,
+      right: 0,
+      child: GestureDetector(
+        onTap: () => debugPrint('Wave tapped'),
+        child: Container(
+          width: 120,
+          height: 90,
+          decoration: BoxDecoration(
+            borderRadius:
+                const BorderRadius.only(topRight: Radius.circular(12)),
+            image: DecorationImage(
+              fit: BoxFit.cover,
+              image: AssetImage(Assets.img.shedule.wave.path), // تصویر موج
+            ),
+          ),
+          child: Align(
+            alignment: Alignment.centerRight,
+            child: Padding(
+              padding: const EdgeInsets.only(right: 18),
+              child: Assets.img.shedule.ellipsisV2.svg(
+                // آیکون سه نقطه
+                fit: BoxFit.cover,
+                width: 30,
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+// بخش تزئینات صفحه
+class _Decorations extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Stack(
       children: [
-        GestureDetector(
-          onTap: () {},
-          child: Container(
-            height: 119,
-            width: 149,
-            decoration: BoxDecoration(
-              color: sheduleModel[index].colorMain,
-              borderRadius: BorderRadius.circular(12),
-            ),
+        Positioned(
+          top: 60,
+          right: 0,
+          child: _DecorationImage(
+            // تصویر وکتور
+            asset: Assets.img.shedule.vector,
+            width: 350,
           ),
         ),
-        Positioned(left: 18, top: 18, child: sheduleModel[index].icon),
         Positioned(
-            bottom: 18,
-            left: 18,
-            child: Text(
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-              sheduleModel[index].name,
-              style: TextStyle(
-                color: Colors.white,
-                fontSize: 16,
-                fontWeight: FontWeight.w600,
-              ),
-            )),
-        Positioned(
+          top: 100,
           right: 0,
-          top: 0,
-          child: Container(
-            width: 68,
-            height: 50,
-            decoration: BoxDecoration(
-              color: sheduleModel[index].boxCornerColor,
-              borderRadius: BorderRadius.only(
-                topRight: Radius.circular(
-                  12,
-                ),
-                bottomLeft: Radius.circular(60),
-              ),
-            ),
-            child: Align(
-              alignment: Alignment.centerRight,
-              child: IconButton(
-                constraints: BoxConstraints(),
-                padding: EdgeInsets.zero,
-                onPressed: () {},
-                icon: SvgPicture.asset(
-                  Assets.img.shedule.ellipsisV2.path,
-                  width: 30,
-                ),
-              ),
-            ),
+          child: _DecorationImage(
+            // تصویر اصلی
+            asset: Assets.img.shedule.hero,
+            width: 200,
           ),
         ),
       ],
@@ -356,85 +358,113 @@ class CourseItem extends StatelessWidget {
   }
 }
 
-class ScheduleTitleHandler extends StatelessWidget {
-  const ScheduleTitleHandler(
-      {super.key, required this.title, required this.description});
-  final String title;
-  final String description;
+// ویجت نمایش تصاویر تزئینی
+class _DecorationImage extends StatelessWidget {
+  final AssetGenImage asset;
+  final double width;
+
+  const _DecorationImage({required this.asset, required this.width});
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(32, 12, 0, 16),
+    return asset.image(fit: BoxFit.cover, width: width); // نمایش تصویر
+  }
+}
+
+// نوار ناوبری پایینی
+class ScheduleBottomNav extends StatelessWidget {
+  final int currentIndex;
+  final ValueChanged<int> onChanged;
+
+  const ScheduleBottomNav({
+    super.key,
+    required this.currentIndex,
+    required this.onChanged,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      height: 70,
+      color: Colors.white,
+      child: Row(
+        children: _navItems
+            .map((item) => _NavItem(
+                  // ساخت هر آیتم ناوبری
+                  asset: item.asset,
+                  isActive: currentIndex == item.index,
+                  onTap: () => onChanged(item.index),
+                ))
+            .toList(),
+      ),
+    );
+  }
+
+  // لیست آیتم‌های ناوبری
+  static final _navItems = [
+    _NavData(0, Assets.img.shedule.home.path), // خانه
+    _NavData(1, Assets.img.shedule.notes.path), // یادداشت‌ها
+    _NavData(2, Assets.img.shedule.comment.path), // نظرات
+    _NavData(3, Assets.img.shedule.user.path), // پروفایل
+  ];
+}
+
+// مدل داده برای آیتم‌های ناوبری
+class _NavData {
+  final int index;
+  final String asset;
+
+  _NavData(this.index, this.asset);
+}
+
+// آیتم تک‌تک بخش‌های ناوبری
+class _NavItem extends StatelessWidget {
+  final dynamic asset;
+  final bool isActive;
+  final VoidCallback onTap;
+
+  const _NavItem({
+    required this.asset,
+    required this.isActive,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Expanded(
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Text(
-            title,
-            style: TextStyle(
-              fontSize: 24,
-              fontWeight: FontWeight.bold,
-              color: Color(0xff212523),
+          IconButton(
+            onPressed: onTap,
+            icon: SvgPicture.asset(
+              asset.path,
+              colorFilter: ColorFilter.mode(
+                // تغییر رنگ آیکون
+                isActive ? _kAccentColor : _kInactiveIconColor,
+                BlendMode.srcIn,
+              ),
+              width: 24,
+              height: 24,
             ),
           ),
-          SizedBox(
-            height: 4,
-          ),
-          Text(
-            description,
-            style: TextStyle(
-              fontSize: 14,
-              fontWeight: FontWeight.w400,
-              color: Color(0xffBCC1CD),
-            ),
-          )
+          if (isActive) _ActiveIndicator(), // نشانگر فعال
         ],
       ),
     );
   }
 }
 
-class MainShedule extends StatefulWidget {
-  const MainShedule({super.key});
-
-  @override
-  State<MainShedule> createState() => _MainSheduleState();
-}
-
-class _MainSheduleState extends State<MainShedule> {
-  int page = 0;
+// نقطه نشانگر فعال در ناوبری
+class _ActiveIndicator extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Scaffold(
-        body: IndexedStack(
-          index: page,
-          children: [
-            MainScheduleScreen(),
-            SheduleNoteScreen(),
-          ],
-        ),
-        bottomNavigationBar: SheduleBottomNavigation(
-          selectedIndex: page,
-          changePage: (pageItem) => setState(() {
-            page = pageItem;
-          }),
-        ),
-      ),
-    );
-  }
-}
-
-class SheduleNoteScreen extends StatelessWidget {
-  const SheduleNoteScreen({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: Column(
-        children: [
-          Text('note'),
-        ],
+    return Container(
+      width: 4,
+      height: 4,
+      decoration: const BoxDecoration(
+        color: _kAccentColor,
+        shape: BoxShape.circle,
       ),
     );
   }
